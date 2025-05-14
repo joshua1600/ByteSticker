@@ -72,6 +72,11 @@
             @mousemove="handleDrag"
             @mouseup="stopDrag"
             @mouseleave="stopDrag"
+
+            @touchstart.prevent="startDrag"
+            @touchmove.prevent="handleDrag"
+            @touchend.prevent="stopDrag"
+            @touchcancel.prevent="stopDrag"
           >
             <span class="text-content" :style="textContentStyles">
               {{ formattedText }}
@@ -497,30 +502,36 @@ export default {
     };
 
     // Drag & Drop Handlers
+    const getXY = (event) => {
+      if (event.touches && event.touches.length) {
+        return { x: event.touches[0].clientX, y: event.touches[0].clientY };
+      }
+      return { x: event.clientX, y: event.clientY };
+    };
+
     const startDrag = (event) => {
       state.dragging = true;
+      const { x, y } = getXY(event);
       const rect = dragZone.value.getBoundingClientRect();
-      state.dragOffset.x = event.clientX - rect.left - state.textPosition.x;
-      state.dragOffset.y = event.clientY - rect.top - state.textPosition.y;
+      state.dragOffset.x = x - rect.left  - state.textPosition.x;
+      state.dragOffset.y = y - rect.top   - state.textPosition.y;
     };
 
     const handleDrag = (event) => {
       if (!state.dragging) return;
-
+      const { x, y } = getXY(event);
       const rect = dragZone.value.getBoundingClientRect();
-      let newX = event.clientX - rect.left - state.dragOffset.x;
-      let newY = event.clientY - rect.top - state.dragOffset.y;
-
-      newX = Math.max(0, Math.min(newX, 240 - state.textBoxWidth));
-      newY = Math.max(0, Math.min(newY, 240 - state.textBoxHeight));
-
-      state.textPosition.x = newX;
-      state.textPosition.y = newY;
+      let newX = x - rect.left - state.dragOffset.x;
+      let newY = y - rect.top  - state.dragOffset.y;
+      
+      state.textPosition.x = Math.max(0, Math.min(newX, 240 - state.textBoxWidth));
+      state.textPosition.y = Math.max(0, Math.min(newY, 240 - state.textBoxHeight));
     };
 
     const stopDrag = () => {
       state.dragging = false;
     };
+
 
     // Text Box Calculations
     const updateTextBoxSize = () => {
