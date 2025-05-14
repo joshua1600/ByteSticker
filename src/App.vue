@@ -384,15 +384,15 @@ export default {
       
       state.cropperInstance = new Cropper(cropperImage.value, {
         aspectRatio: 1,
-        viewMode: 2, // Restrict to container boundaries
-        autoCrop: true,
-        autoCropArea: 1, // 100% of container
+        viewMode: 1, 
+        autoCropArea: 1, 
+        background: false,
+        zoomOnWheel: true,
         minContainerWidth: 300,
         minContainerHeight: 300,
         responsive: true,
         checkCrossOrigin: false,
         ready() {
-          // Automatically scale image to fit container
           const containerRatio = this.cropper.containerData.width / this.cropper.containerData.height;
           const imageRatio = this.cropper.imageData.width / this.cropper.imageData.height;
           
@@ -449,7 +449,14 @@ export default {
         img.onload = () => {
           const ctx = canvas.value.getContext('2d');
           ctx.clearRect(0, 0, 240, 240);
-          ctx.drawImage(img, 0, 0, 240, 240);
+          const scale = Math.min(240 / img.width, 240 / img.height);
+          const w = img.width * scale;
+          const h = img.height * scale;
+          const x = (240 - w) / 2;
+          const y = (240 - h) / 2;
+
+          ctx.clearRect(0, 0, 240, 240);
+          ctx.drawImage(img, x, y, w, h);
           state.image = img;
           state.currentImageUrl = url;
         };
