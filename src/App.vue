@@ -769,18 +769,17 @@ body {
 }
 
 .upload-section {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   margin-bottom: 2rem;
 }
-
 .upload-input {
-  padding: 0.75rem 1.5rem;
-  border: 2px dashed #404040;
-  border-radius: 8px;
-  background: #1e1e1e;
-  color: inherit;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  flex: none;
+  width: 70%;    
+  max-width: 300px;
+  min-width: 150px;
 }
 
 .upload-input:hover {
@@ -789,17 +788,26 @@ body {
 }
 
 .tutorial-icon {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   opacity: 0.7;
   transition: opacity 0.2s, transform 0.2s;
-  margin-left: 2rem;
+  flex-shrink: 0;
 }
-
 .tutorial-icon:hover {
   opacity: 1;
   transform: scale(1.1);
+}
+
+@media (max-width: 480px) {
+  .upload-section {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .tutorial-icon {
+    margin-top: 0.5rem;
+  }
 }
 
 /* Canvas Container */
@@ -887,7 +895,6 @@ body {
   height: 4px;
   background: #404040;
   border-radius: 2px;
-  -webkit-appearance: none;
 }
 
 .range-input::-webkit-slider-thumb {
